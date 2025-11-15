@@ -25,8 +25,10 @@ llm = ChatGoogleGenerativeAI(
 
 app = FastAPI(title="UntukBumi API")
 
-# Add CORS middleware for frontend communication
-allow_origins = os.environ.get("CORS_ORIGINS", "http://localhost:5173,http://localhost:3000,http://localhost:8080").split(",")
+
+default_origins = "http://localhost:5173,http://localhost:3000,http://localhost:8080"
+allow_origins = os.environ.get("CORS_ORIGINS", default_origins).split(",")
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=allow_origins,
@@ -34,6 +36,7 @@ app.add_middleware(
     allow_methods=["GET", "POST"],
     allow_headers=["*"],
 )
+
 
 @app.post("/api/rag")
 async def rag(req: RagRequest):
@@ -77,4 +80,6 @@ Aktivitas: {req.activities}
         raise HTTPException(status_code=500, detail=f"Internal server error: {str(e)}")
 
 if __name__ == "__main__":
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    # IMPORTANT: use Railway's PORT env instead of hardcoding 8000
+    port = int(os.environ.get("PORT", 8000))
+    uvicorn.run(app, host="0.0.0.0", port=port)
