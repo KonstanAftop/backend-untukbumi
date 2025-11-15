@@ -7,4 +7,7 @@ langchain-google-genai
 faiss-cpu
 pydantic
 python-multipart
-# sentence-transformers
+sentence-transformers
+
+# Force CPU-only PyTorch on Linux
+torch==2.5.1+cpu ; platform_system == "Linux"
